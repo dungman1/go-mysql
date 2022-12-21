@@ -12,6 +12,8 @@ type CredentialProvider interface {
 	CheckUsername(username string) (bool, error)
 	// get user credential
 	GetCredential(username string) (password string, found bool, err error)
+	// check user credential with username, password
+	CheckCredRemote(username, password string) error
 }
 
 func NewInMemoryProvider() *InMemoryProvider {
@@ -36,6 +38,10 @@ func (m *InMemoryProvider) GetCredential(username string) (password string, foun
 		return "", false, nil
 	}
 	return v.(string), true, nil
+}
+
+func (m *InMemoryProvider) CheckCredRemote(username, password string) error {
+	return nil
 }
 
 func (m *InMemoryProvider) AddUser(username, password string) {

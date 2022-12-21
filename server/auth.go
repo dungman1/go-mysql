@@ -26,6 +26,9 @@ func (c *Conn) compareAuthData(authPluginName string, clientAuthData []byte) err
 		}
 		return c.compareNativePasswordAuthData(clientAuthData, c.password)
 
+	case AUTH_CLEAR_PASSWORD:
+		return c.checkCredRemote(c.user, clientAuthData)
+
 	case AUTH_CACHING_SHA2_PASSWORD:
 		if err := c.compareCacheSha2PasswordAuthData(clientAuthData); err != nil {
 			return err
@@ -63,6 +66,14 @@ func (c *Conn) acquirePassword() error {
 	}
 	c.password = password
 	return nil
+}
+
+func (c *Conn) checkCredRemote(username string, authData []byte) error {
+	if len(authData) > 1 {
+		authData = authData[:len(authData) - 1]
+	}
+	password := string(authData)
+	return c.credentialProvider.CheckCredRemote(username, password)
 }
 
 func errAccessDenied(password string) error {

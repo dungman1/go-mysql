@@ -26,6 +26,9 @@ func (c *Conn) handleAuthSwitchResponse() error {
 		}
 		return c.compareNativePasswordAuthData(authData, c.password)
 
+	case AUTH_CLEAR_PASSWORD:
+		return c.checkCredRemote(c.user, authData)
+
 	case AUTH_CACHING_SHA2_PASSWORD:
 		if !c.cachingSha2FullAuth {
 			// Switched auth method but no MoreData packet send yet
